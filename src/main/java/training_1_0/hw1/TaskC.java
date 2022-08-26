@@ -1,4 +1,4 @@
-package hw1;
+package training_1_0.hw1;
 
 import java.util.ArrayList;
 import java.util.List;
