@@ -4,12 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
-public class Maya {
-    //https://contest.yandex.ru/contest/27665/problems/H/
-    //TL test 13
+public class Maya2 {
     public static void main(String[] args) {
         Pattern regex = Pattern.compile(" ");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -19,15 +18,21 @@ public class Maya {
             int sl = Integer.parseInt(input[1]);
             String g = reader.readLine();
             String s = reader.readLine();
-            char[] chars = g.toCharArray();
-            Arrays.sort(chars);
-            g = new String(chars);
+            char[] chg = g.toCharArray();
+            char[] chs = s.toCharArray();
+            Map<Character, Long> gmap = new HashMap<>(gl);
+            for (int i = 0; i < chg.length; i++) {
+                gmap.compute(chg[i], (key, total) -> (total == null) ? 1 : total + 1);
+            }
+
             int cnt = 0;
+            Map<Character, Long> smap;
             for (int i = 0; i < s.length() - g.length() + 1; i++) {
-                s.getChars(i, i + gl, chars, 0);
-                Arrays.sort(chars);
-                String seq = new String(chars);
-                if (g.equals(seq)) {
+                smap = new HashMap<>(gl);
+                for (int j = 0; j < gl; j++) {
+                    smap.compute(chs[i+j], (key, total) -> (total == null) ? 1 : total + 1);
+                }
+                if(smap.entrySet().stream().allMatch(e-> e.getValue().equals(gmap.get(e.getKey())))){
                     cnt++;
                 }
             }
