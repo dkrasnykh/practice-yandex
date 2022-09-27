@@ -8,9 +8,7 @@ import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class Subbotnik {
-    /*
     static boolean check(int m, int rc, int c, int[] height) {
-
         int lastPos = -1;
         int lastPos1 = -1;
 
@@ -22,9 +20,7 @@ public class Subbotnik {
         System.out.println("---------------------------------------------------------------");
         System.out.println("m: " + m);
         for (int i = c - 1; i < height.length; i++) {
-
             if (height[i] - height[i - c + 1] >= m && i - c + 1 > lastPos) {
-
                 max = height[i] - height[i - c + 1];
                 cnt++;
                 lastPos = i;
@@ -32,20 +28,16 @@ public class Subbotnik {
             }
 
             if (height[i] - height[i - c + 1] >= m1 && i - c + 1 > lastPos1) {
-
                 max1 = height[i] - height[i - c + 1];
                 cnt1++;
                 lastPos1 = i;
-
+                //System.out.println("height: " + height[i]);
             }
         }
         System.out.println("cnt: " + cnt);
         System.out.println("cnt1: " + cnt1);
-
         return cnt >= rc && cnt1<cnt;
-
     }
-
     static int rbinsearch(int l, int r, int rc, int c, int[] height) {
         while (l < r) {
             int m = (r + l + 1) / 2;
@@ -57,7 +49,6 @@ public class Subbotnik {
         }
         return l;
     }
-
     static int lbinsearch(int l, int r, int rc, int c, int[] height) {
         while (l < r) {
             int m = (r + l) / 2;
@@ -84,6 +75,7 @@ public class Subbotnik {
             }
             Arrays.sort(height);
             int r = height[n - 1] - height[0];
+
             int[] result = new int[rc + 1];
             int ans = rbinsearch(0, r, rc, c, height);
             writer.println(ans);
@@ -91,6 +83,4 @@ public class Subbotnik {
             e.printStackTrace();
         }
     }
-    
-     */
 }
