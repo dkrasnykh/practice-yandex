@@ -4,52 +4,29 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class Subbotnik {
-    static boolean check(int m, int rc, int c, int[] height) {
-        int lastPos = -1;
-        int lastPos1 = -1;
-
-        int cnt = 0;
-        int cnt1 = 0;
-        int m1 = m - 1;
-        int max=Integer.MAX_VALUE;
-        int max1 = Integer.MAX_VALUE;
-        System.out.println("---------------------------------------------------------------");
-        System.out.println("m: " + m);
+    static boolean check(int m, int r, int c, int[] height) {
+        List<int[]> segments = new ArrayList<>();
         for (int i = c - 1; i < height.length; i++) {
-            if (height[i] - height[i - c + 1] >= m && i - c + 1 > lastPos) {
-                max = height[i] - height[i - c + 1];
-                cnt++;
-                lastPos = i;
-                System.out.println("height: " + height[i]);
-            }
-
-            if (height[i] - height[i - c + 1] >= m1 && i - c + 1 > lastPos1) {
-                max1 = height[i] - height[i - c + 1];
-                cnt1++;
-                lastPos1 = i;
-                //System.out.println("height: " + height[i]);
+            if (height[i] - height[i - c + 1] <= m) {
+                segments.add(new int[]{i - c + 1, i});
             }
         }
-        System.out.println("cnt: " + cnt);
-        System.out.println("cnt1: " + cnt1);
-        return cnt >= rc && cnt1<cnt;
-    }
-    static int rbinsearch(int l, int r, int rc, int c, int[] height) {
-        while (l < r) {
-            int m = (r + l + 1) / 2;
-            if (check(m, rc, c, height)) {
-                l = m;
-            } else {
-                r = m - 1;
+        Collections.sort(segments, Comparator.comparingInt(e -> e[1]));
+        int count = 0;
+        int finish = -1;
+        for (int[] s : segments) {
+            if (finish < s[0]) {
+                finish = s[1];
+                count++;
             }
         }
-        return l;
+        return count >= r;
     }
-    static int lbinsearch(int l, int r, int rc, int c, int[] height) {
+    static int binsearch(int l, int r, int rc, int c, int[] height) {
         while (l < r) {
             int m = (r + l) / 2;
             if (check(m, rc, c, height)) {
@@ -60,7 +37,6 @@ public class Subbotnik {
         }
         return l;
     }
-
     public static void main(String[] args) {
         Pattern regex = Pattern.compile(" ");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -74,10 +50,17 @@ public class Subbotnik {
                 height[i] = Integer.parseInt(reader.readLine());
             }
             Arrays.sort(height);
-            int r = height[n - 1] - height[0];
-
-            int[] result = new int[rc + 1];
-            int ans = rbinsearch(0, r, rc, c, height);
+            int l = Integer.MAX_VALUE;
+            int r = 0;
+            for (int i = c - 1; i < height.length; i++) {
+                if (height[i] - height[i - c + 1] < l) {
+                    l = height[i] - height[i - c + 1];
+                }
+                if (height[i] - height[i - c + 1] > r) {
+                    r = height[i] - height[i - c + 1];
+                }
+            }
+            int ans = binsearch(l, r, rc, c, height);
             writer.println(ans);
         } catch (IOException e) {
             e.printStackTrace();

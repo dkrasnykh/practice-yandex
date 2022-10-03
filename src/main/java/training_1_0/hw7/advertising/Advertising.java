@@ -69,6 +69,14 @@ public class Advertising {
                 }
                 starts[i] = s;
                 ends[i] = e;
+                //events.add(new Position(s, e, ))
+                /*
+                -2 - начало отрезка
+                 2 - конец отрезка
+
+                -1 - начало потенциальной точки
+                 1 - конец потенциальной точки
+                */
                 if (e - s >= 5) {
                     events.add(new Position(s, -2, e));
                     events.add(new Position(e, 2, s));
@@ -76,11 +84,16 @@ public class Advertising {
 
             }
 
+            //добавить потенциальные точки
             int x1 = start;
             int x2 = start + 5;
             while (x2 <= end) {
                 events.add(new Position(x1, -1, x2));
                 events.add(new Position(x2, 1, x1));
+                /*
+                x1 = x2;
+                x2 = x1 + 5;
+                */
                 x1++;
                 x2 = x1 + 5;
             }
@@ -94,24 +107,40 @@ public class Advertising {
                 } else if (events.get(i).type == 2) {
                     open.remove(new Position(events.get(i).other, -2, events.get(i).x));
                 } else if (events.get(i).type == 1) {
+                    //закрываем потенциальную точку
+                    //в множестве open нужно найти список подходящих элементов
                     int d = events.get(i).x - 5;
-
+                    //long max = open.stream().filter(e1 -> (e1.x <= d)).count();
                     events.get(i).open = new HashSet<>();
                     events.get(i).open = open.stream().filter(e1 -> (e1.x <= d)).collect(Collectors.toSet());
+                    //events.get(i).open = (int) max;
                 }
+
+
             }
+
+            /*
+            1) Выбрать первый (самый ранний) потенциальный отрезок из списка. Удалить из множества все точки, которые с ним пересекаются
+            2)
+            */
+
+            //Position p = events.stream().filter(p1 -> p1.type == 1).max((p1, p2) -> (p1.open.size()>0 && p1.open.size() == p2.open.size()) ? p2.x - p1.x : p2.open.size() - p1.open.size()).get();
 
             Optional<Position> popt = events.stream().filter(p1 -> p1.type == 1).max((p1, p2) -> p1.open.size() - p2.open.size());
             if (!popt.isPresent()) {
                 writer.println("0 1 6");
                 return;
             }
+            //Position p = events.stream().filter(p1 -> p1.type == 1).max((p1, p2) -> p1.open.size() - p2.open.size()).get();
             Position p = popt.get();
+
+            //if(p.){}
 
             events.clear();
             for (int i = 0; i < n; i++) {
                 Position pos = new Position(starts[i], -2, ends[i]);
                 if (!p.open.contains(pos)) {
+                    //проверяем отрезки
                     if (starts[i] < p.other && ends[i] >= p.other && ends[i] <= p.x) {
                         events.add(new Position(starts[i], -2, p.other));
                         events.add(new Position(p.other, 2, starts[i]));
@@ -128,11 +157,25 @@ public class Advertising {
 
             }
 
+            /*
+            int x1 = start;
+            int x2 = start + 5;
+            while (x2 <= end) {
+                events.add(new Position(x1, -1, x2));
+                events.add(new Position(x2, 1, x1));
+                x1 = x2;
+                x2 = x1 + 5;
+            }
+            */
             x1 = start;
             x2 = start + 5;
             while (x2 < p.other) {
                 events.add(new Position(x1, -1, x2));
                 events.add(new Position(x2, 1, x1));
+                /*
+                x1 = x2;
+                x2 = x1 + 5;
+                */
                 x1++;
                 x2 = x1 + 5;
             }
@@ -142,6 +185,10 @@ public class Advertising {
             while (x2 < end) {
                 events.add(new Position(x1, -1, x2));
                 events.add(new Position(x2, 1, x1));
+                /*
+                x1 = x2;
+                x2 = x1 + 5;
+                */
                 x1++;
                 x2 = x1 + 5;
             }
@@ -154,11 +201,17 @@ public class Advertising {
                 } else if (events.get(i).type == 2) {
                     open.remove(new Position(events.get(i).other, -2, events.get(i).x));
                 } else if (events.get(i).type == 1) {
+                    //закрываем потенциальную точку
+                    //в множестве open нужно найти список подходящих элементов
                     int d = events.get(i).x - 5;
+                    //long max = open.stream().filter(e1 -> (e1.x <= d)).count();
                     events.get(i).open = new HashSet<>();
                     events.get(i).open = open.stream().filter(e1 -> (e1.x <= d)).collect(Collectors.toSet());
+                    //events.get(i).open = (int) max;
                 }
             }
+
+            //Position pnext = events.stream().filter(p1 -> p1.type == 1).max((p1, p2) -> (p1.open.size() == p2.open.size()) ? p2.x - p1.x : p2.open.size() - p1.open.size()).get();
             Optional<Position> poptnext = events.stream().filter(p1 -> p1.type == 1).max((p1, p2) -> p1.open.size() - p2.open.size());
             if (!poptnext.isPresent()) {
                 writer.println(p.open.size() + " " + p.other + " " + (p.other + 10));
@@ -166,6 +219,10 @@ public class Advertising {
             }
             Position pnext = poptnext.get();
             writer.println(p.open.size() + pnext.open.size() + " " + p.other + " " + pnext.other);
+            /*
+            что если составить массив x на котором будут отображены количество точек
+             */
+            int test = 5;
         } catch (IOException e) {
             e.printStackTrace();
         }
