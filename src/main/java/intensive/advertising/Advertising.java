@@ -1,4 +1,4 @@
-package training_1_0.hw7.advertising;
+package intensive.advertising;
 
 import java.io.BufferedReader;
 import java.io.IOException;
